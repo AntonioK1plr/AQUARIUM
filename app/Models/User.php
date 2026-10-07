@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable
 {
@@ -19,9 +20,14 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'role_id',
         'name',
         'email',
         'password',
+        'telefono',
+        'direccion',
+        'estatus',
+
     ];
 
     /**
@@ -44,6 +50,18 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'estatus' => 'boolean',
         ];
+    }
+    // Relación con el Modelo Role
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    // Helper para verificar roles fácilmente en los controladores
+    public function hasRole(string $roleName): bool
+    {
+        return $this->role && $this->role->nombre === $roleName;
     }
 }
